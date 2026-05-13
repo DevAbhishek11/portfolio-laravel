@@ -3,23 +3,23 @@
 namespace App\Mail;
 
 use App\Models\ContactQueries;
-use App\Models\ContactReplies;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ContactReplyMail extends Mailable
+class ContactReceivedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public function __construct(
-        public ContactQueries $query,
-        public ContactReplies $reply
+        public User         $admin,
+        public ContactQueries $query
     ) {}
 
     public function build(): static
     {
-        return $this->subject($this->reply->subject)
-                    ->view('emails.contact-reply');
+        return $this->subject('New Contact Query from ' . $this->query->name)
+            ->view('emails.contact-received');
     }
 }

@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <x-shared.meta-tags :title="$metaTitle ?? config('portfolio.site_name')" :description="$metaDesc ?? config('portfolio.meta.description')" :ogImage="$ogImage ?? config('portfolio.meta.og_image')" />
-
+    <x-shared.json-ld type="{{ $jsonLdType ?? 'website' }}" :data="$jsonLdData ?? []" />
     {{-- Tailwind --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,6 +37,9 @@
 
     {{-- Locomotive Scroll CSS --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/anime-theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animations.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 
     <style>
         :root {
@@ -545,7 +548,8 @@
             </h1>
             <p
                 style="color:var(--text-secondary);font-size:0.8rem;text-align:center;margin-top:0.25rem;letter-spacing:0.1em;">
-                読み込み中 · Loading</p>
+                <span id="loader-msg">読み込み中…</span>
+            </p>
         </div>
         <div class="loader-bar">
             <div class="loader-fill" id="loader-fill"></div>
@@ -621,77 +625,79 @@
     <x-shared.flash-message />
 
     {{-- Main content --}}
-    <main>
-        @yield('content')
-    </main>
+    <div data-scroll-container id="scroll-container">
+        <main>
+            @yield('content')
+        </main>
 
-    {{-- Footer --}}
-    <footer>
-        <div class="container" style="padding-top:3rem;padding-bottom:3rem;">
-            <div
-                style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;margin-bottom:3rem;">
-                <div>
-                    <h3 class="font-display grad-text" style="font-size:1.4rem;font-weight:800;margin-bottom:0.75rem;">
-                        {{ config('portfolio.site_name') }}
-                    </h3>
-                    <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.7;max-width:260px;">
-                        {{ config('portfolio.meta.description') }}
+        {{-- Footer --}}
+        <footer>
+            <div class="container" style="padding-top:3rem;padding-bottom:3rem;">
+                <div
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;margin-bottom:3rem;">
+                    <div>
+                        <h3 class="font-display grad-text"
+                            style="font-size:1.4rem;font-weight:800;margin-bottom:0.75rem;">
+                            {{ config('portfolio.site_name') }}
+                        </h3>
+                        <p style="color:var(--text-secondary);font-size:0.875rem;line-height:1.7;max-width:260px;">
+                            {{ config('portfolio.meta.description') }}
+                        </p>
+                        <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+                            @if (config('portfolio.social.github'))
+                                <a href="{{ config('portfolio.social.github') }}" target="_blank"
+                                    class="social-icon">GH</a>
+                            @endif
+                            @if (config('portfolio.social.linkedin'))
+                                <a href="{{ config('portfolio.social.linkedin') }}" target="_blank"
+                                    class="social-icon">in</a>
+                            @endif
+                            @if (config('portfolio.social.twitter'))
+                                <a href="{{ config('portfolio.social.twitter') }}" target="_blank"
+                                    class="social-icon">X</a>
+                            @endif
+                        </div>
+                    </div>
+                    <div>
+                        <h4
+                            style="color:var(--text-primary);font-size:0.875rem;font-weight:600;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em;">
+                            Navigation</h4>
+                        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                            @foreach ([['home', 'Home'], ['about', 'About'], ['projects.index', 'Projects'], ['services', 'Services'], ['blogs.index', 'Blog'], ['contact', 'Contact']] as [$r, $l])
+                                <a href="{{ route($r) }}"
+                                    style="color:var(--text-secondary);text-decoration:none;font-size:0.875rem;transition:color 0.2s;"
+                                    onmouseover="this.style.color='var(--accent-1)'"
+                                    onmouseout="this.style.color='var(--text-secondary)'">{{ $l }}</a>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        <h4
+                            style="color:var(--text-primary);font-size:0.875rem;font-weight:600;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em;">
+                            Contact</h4>
+                        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                            @if (config('portfolio.site_email'))
+                                <span style="color:var(--text-secondary);font-size:0.875rem;">📧
+                                    {{ config('portfolio.site_email') }}</span>
+                            @endif
+                            @if (config('portfolio.site_location'))
+                                <span style="color:var(--text-secondary);font-size:0.875rem;">📍
+                                    {{ config('portfolio.site_location') }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="border-top:1px solid var(--border-color);padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+                    <p style="color:var(--text-secondary);font-size:0.8rem;">
+                        &copy; {{ date('Y') }} {{ config('portfolio.site_name') }}. All rights reserved.
                     </p>
-                    <div style="display:flex;gap:0.75rem;margin-top:1rem;">
-                        @if (config('portfolio.social.github'))
-                            <a href="{{ config('portfolio.social.github') }}" target="_blank"
-                                class="social-icon">GH</a>
-                        @endif
-                        @if (config('portfolio.social.linkedin'))
-                            <a href="{{ config('portfolio.social.linkedin') }}" target="_blank"
-                                class="social-icon">in</a>
-                        @endif
-                        @if (config('portfolio.social.twitter'))
-                            <a href="{{ config('portfolio.social.twitter') }}" target="_blank"
-                                class="social-icon">X</a>
-                        @endif
-                    </div>
-                </div>
-                <div>
-                    <h4
-                        style="color:var(--text-primary);font-size:0.875rem;font-weight:600;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em;">
-                        Navigation</h4>
-                    <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                        @foreach ([['home', 'Home'], ['about', 'About'], ['projects.index', 'Projects'], ['services', 'Services'], ['blogs.index', 'Blog'], ['contact', 'Contact']] as [$r, $l])
-                            <a href="{{ route($r) }}"
-                                style="color:var(--text-secondary);text-decoration:none;font-size:0.875rem;transition:color 0.2s;"
-                                onmouseover="this.style.color='var(--accent-1)'"
-                                onmouseout="this.style.color='var(--text-secondary)'">{{ $l }}</a>
-                        @endforeach
-                    </div>
-                </div>
-                <div>
-                    <h4
-                        style="color:var(--text-primary);font-size:0.875rem;font-weight:600;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em;">
-                        Contact</h4>
-                    <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                        @if (config('portfolio.site_email'))
-                            <span style="color:var(--text-secondary);font-size:0.875rem;">📧
-                                {{ config('portfolio.site_email') }}</span>
-                        @endif
-                        @if (config('portfolio.site_location'))
-                            <span style="color:var(--text-secondary);font-size:0.875rem;">📍
-                                {{ config('portfolio.site_location') }}</span>
-                        @endif
-                    </div>
+                    <p style="color:rgba(139,92,246,0.4);font-size:0.75rem;letter-spacing:0.1em;">作られた愛を込めて · Made with
+                        love</p>
                 </div>
             </div>
-            <div
-                style="border-top:1px solid var(--border-color);padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-                <p style="color:var(--text-secondary);font-size:0.8rem;">
-                    &copy; {{ date('Y') }} {{ config('portfolio.site_name') }}. All rights reserved.
-                </p>
-                <p style="color:rgba(139,92,246,0.4);font-size:0.75rem;letter-spacing:0.1em;">作られた愛を込めて · Made with
-                    love</p>
-            </div>
-        </div>
-    </footer>
-
+        </footer>
+    </div>
     <style>
         .social-icon {
             width: 36px;
@@ -717,10 +723,39 @@
     </style>
 
     {{-- CDN Scripts --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script> --}}
+
+    <canvas id="sparkle-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:1;"></canvas>
+    <canvas id="sakura-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:2;"></canvas>
+
+    {{-- CDN Scripts --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.min.js" defer></script>
+
+    {{-- 3D System (order-dependent) --}}
+    <script src="{{ asset('assets/js/three-scene.js') }}"></script>
+    <script src="{{ asset('assets/js/anime-character.js') }}"></script>
+    <script src="{{ asset('assets/js/floating-objects.js') }}"></script>
+    <script src="{{ asset('assets/js/scene-environment.js') }}"></script>
+    <script src="{{ asset('assets/js/section-scenes.js') }}"></script>
+    <script src="{{ asset('assets/js/scene-quality.js') }}"></script>
+    <script src="{{ asset('assets/js/three-boot.js') }}"></script>
+
+    {{-- Our JS files --}}
+    <script src="{{ asset('assets/js/preloader.js') }}"></script>
+    <script src="{{ asset('assets/js/cursor.js') }}"></script>
+    <script src="{{ asset('assets/js/locomotive-init.js') }}"></script>
+    <script src="{{ asset('assets/js/scroll-animations.js') }}"></script>
+    <script src="{{ asset('assets/js/mouse-interactions.js') }}"></script>
+    <script src="{{ asset('assets/js/particle-system.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script>
         // ── Preloader ────────────────────────────────────────────────────────────────

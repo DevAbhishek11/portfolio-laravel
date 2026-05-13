@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.auth'         => \App\Http\Middleware\AdminAuthenticated::class,
             'two-factor.verified' => \App\Http\Middleware\TwoFactorVerified::class,
             'track.pageview'     => \App\Http\Middleware\TrackPageView::class,
+            'rate.limit' => \App\Http\Middleware\RateLimiter::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

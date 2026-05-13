@@ -107,61 +107,62 @@
 
                 {{-- Contact Info --}}
                 <div class="reveal-right" style="display:flex;flex-direction:column;gap:1.25rem;">
+                    <canvas id="contact-canvas" style="width:280px;height:200px;border-radius:1rem;">
+                        @foreach ([['📧', 'Email', config('portfolio.site_email'), 'mailto:' . config('portfolio.site_email')], ['📍', 'Location', config('portfolio.site_location'), null], ['📱', 'Phone', config('portfolio.site_phone'), 'tel:' . config('portfolio.site_phone')]] as [$icon, $label, $value, $href])
+                            @if ($value)
+                                <div class="anime-card" style="padding:1.25rem;display:flex;align-items:center;gap:1rem;">
+                                    <div
+                                        style="width:44px;height:44px;border-radius:0.75rem;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">
+                                        {{ $icon }}
+                                    </div>
+                                    <div>
+                                        <p style="color:var(--text-secondary);font-size:0.75rem;margin-bottom:0.15rem;">
+                                            {{ $label }}</p>
+                                        @if ($href)
+                                            <a href="{{ $href }}"
+                                                style="color:var(--text-primary);font-size:0.9rem;font-weight:500;text-decoration:none;">{{ $value }}</a>
+                                        @else
+                                            <p style="color:var(--text-primary);font-size:0.9rem;font-weight:500;">
+                                                {{ $value }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                        <div class="anime-card" style="padding:1.25rem;">
+                            <p
+                                style="color:var(--text-secondary);font-size:0.75rem;margin-bottom:0.875rem;text-transform:uppercase;letter-spacing:0.08em;">
+                                Find me online</p>
+                            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                                @if (config('portfolio.social.github'))
+                                    <a href="{{ config('portfolio.social.github') }}" target="_blank" class="social-icon"
+                                        style="width:auto;padding:0 1rem;border-radius:0.5rem;font-size:0.82rem;">GitHub</a>
+                                @endif
+                                @if (config('portfolio.social.linkedin'))
+                                    <a href="{{ config('portfolio.social.linkedin') }}" target="_blank" class="social-icon"
+                                        style="width:auto;padding:0 1rem;border-radius:0.5rem;font-size:0.82rem;">LinkedIn</a>
+                                @endif
+                                @if (config('portfolio.social.twitter'))
+                                    <a href="{{ config('portfolio.social.twitter') }}" target="_blank"
+                                        class="social-icon"
+                                        style="width:auto;padding:0 1rem;border-radius:0.5rem;font-size:0.82rem;">Twitter</a>
+                                @endif
+                            </div>
+                        </div>
 
-                    @foreach ([['📧', 'Email', config('portfolio.site_email'), 'mailto:' . config('portfolio.site_email')], ['📍', 'Location', config('portfolio.site_location'), null], ['📱', 'Phone', config('portfolio.site_phone'), 'tel:' . config('portfolio.site_phone')]] as [$icon, $label, $value, $href])
-                        @if ($value)
-                            <div class="anime-card" style="padding:1.25rem;display:flex;align-items:center;gap:1rem;">
+
+                        <div class="anime-card" style="padding:1.25rem;border-color:rgba(34,197,94,0.3);">
+                            <div style="display:flex;align-items:center;gap:0.625rem;">
                                 <div
-                                    style="width:44px;height:44px;border-radius:0.75rem;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">
-                                    {{ $icon }}
+                                    style="width:10px;height:10px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;">
                                 </div>
-                                <div>
-                                    <p style="color:var(--text-secondary);font-size:0.75rem;margin-bottom:0.15rem;">
-                                        {{ $label }}</p>
-                                    @if ($href)
-                                        <a href="{{ $href }}"
-                                            style="color:var(--text-primary);font-size:0.9rem;font-weight:500;text-decoration:none;">{{ $value }}</a>
-                                    @else
-                                        <p style="color:var(--text-primary);font-size:0.9rem;font-weight:500;">
-                                            {{ $value }}</p>
-                                    @endif
-                                </div>
+                                <p style="color:#4ade80;font-size:0.875rem;font-weight:600;">Available for new projects</p>
                             </div>
-                        @endif
-                    @endforeach
-
-                    {{-- Social links --}}
-                    <div class="anime-card" style="padding:1.25rem;">
-                        <p
-                            style="color:var(--text-secondary);font-size:0.75rem;margin-bottom:0.875rem;text-transform:uppercase;letter-spacing:0.08em;">
-                            Find me online</p>
-                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-                            @if (config('portfolio.social.github'))
-                                <a href="{{ config('portfolio.social.github') }}" target="_blank" class="social-icon"
-                                    style="width:auto;padding:0 1rem;border-radius:0.5rem;font-size:0.82rem;">GitHub</a>
-                            @endif
-                            @if (config('portfolio.social.linkedin'))
-                                <a href="{{ config('portfolio.social.linkedin') }}" target="_blank" class="social-icon"
-                                    style="width:auto;padding:0 1rem;border-radius:0.5rem;font-size:0.82rem;">LinkedIn</a>
-                            @endif
-                            @if (config('portfolio.social.twitter'))
-                                <a href="{{ config('portfolio.social.twitter') }}" target="_blank" class="social-icon"
-                                    style="width:auto;padding:0 1rem;border-radius:0.5rem;font-size:0.82rem;">Twitter</a>
-                            @endif
+                            <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:0.375rem;">Typical response
+                                time:
+                                within 24 hours</p>
                         </div>
-                    </div>
-
-                    {{-- Availability --}}
-                    <div class="anime-card" style="padding:1.25rem;border-color:rgba(34,197,94,0.3);">
-                        <div style="display:flex;align-items:center;gap:0.625rem;">
-                            <div
-                                style="width:10px;height:10px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;">
-                            </div>
-                            <p style="color:#4ade80;font-size:0.875rem;font-weight:600;">Available for new projects</p>
-                        </div>
-                        <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:0.375rem;">Typical response time:
-                            within 24 hours</p>
-                    </div>
+                    </canvas>
                 </div>
             </div>
         </div>

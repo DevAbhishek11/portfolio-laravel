@@ -1,6 +1,17 @@
 @extends('layouts.app')
 @section('content')
 
+    @php
+        $jsonLdType = 'article';
+        $jsonLdData = [
+            'title' => $blog->meta_title ?: $blog->title,
+            'description' => $blog->meta_description ?: $blog->excerpt,
+            'image' => $blog->featured_image ? asset($blog->featured_image) : '',
+            'published_at' => $blog->published_at?->toIso8601String(),
+            'updated_at' => $blog->updated_at->toIso8601String(),
+        ];
+    @endphp
+
     <article style="padding-top:5rem;">
         {{-- Featured image --}}
         @if ($blog->featured_image)

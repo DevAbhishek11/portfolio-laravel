@@ -13,22 +13,28 @@
 
         <div class="container" style="position:relative;z-index:1;">
             <div style="max-width:700px;">
-                <div class="section-tag reveal">
+                <div class="section-tag reveal" data-anime="fade-up">
                     <span>Full Stack Developer</span>
                 </div>
 
                 <h1 class="hero-title font-display reveal delay-1"
                     style="font-size:clamp(3rem,7vw,5.5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;color:var(--text-primary);">
-                    Hi, I'm <span class="grad-text">{{ config('portfolio.site_name') }}</span>
+                    Hi, I'm
+                    <span class="grad-text" data-split="chars">
+                        {{ config('portfolio.site_name') }}
+                    </span>
+
                 </h1>
 
                 <p class="reveal delay-2"
-                    style="font-size:1.15rem;color:var(--text-secondary);max-width:520px;margin-bottom:2.5rem;line-height:1.8;">
+                    style="font-size:1.15rem;color:var(--text-secondary);max-width:520px;margin-bottom:2.5rem;line-height:1.8;"
+                    data-anime="fade-up" data-delay="200">
                     I craft beautiful, performant web experiences — from pixel-perfect frontends to bulletproof backends.
                     <span style="color:var(--text-accent);">{{ $projectCount }}+ projects</span> shipped.
                 </p>
 
-                <div style="display:flex;gap:1rem;flex-wrap:wrap;" class="reveal delay-3">
+                <div style="display:flex;gap:1rem;flex-wrap:wrap;" class="reveal delay-3" data-anime="fade-up"
+                    data-delay="300">
                     <a href="{{ route('projects.index') }}" class="btn-anime">
                         View My Work
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
@@ -62,7 +68,7 @@
     </section>
 
     {{-- ── FEATURED PROJECTS ────────────────────────────────────────────────────── --}}
-    <section class="section-pad" style="position:relative;">
+    <section class="stagger-grid" class="section-pad" style="position:relative;">
         <div class="container">
             <div style="text-align:center;margin-bottom:4rem;">
                 <div class="section-tag reveal" style="justify-content:center;">Selected Work</div>
@@ -141,7 +147,8 @@
     </section>
 
     {{-- ── SERVICES PREVIEW ─────────────────────────────────────────────────────── --}}
-    <section class="section-pad" style="background:var(--bg-secondary);position:relative;overflow:hidden;">
+    <section data-section-burst class="section-pad"
+        style="background:var(--bg-secondary);position:relative;overflow:hidden;">
         <div class="orb"
             style="width:500px;height:500px;background:rgba(6,182,212,0.06);top:50%;left:-100px;transform:translateY(-50%);">
         </div>
@@ -255,7 +262,7 @@
         </div>
     </section>
 
-    @push('scripts')
+    {{-- @push('scripts')
         <script>
             // ── Hero Three.js particle scene ─────────────────────────────────────────────
             (function() {
@@ -375,7 +382,7 @@
                 animate();
             })();
         </script>
-    @endpush
+    @endpush --}}
 
     <style>
         @keyframes scrollPulse {

@@ -1,6 +1,16 @@
 @extends('layouts.app')
 @section('content')
 
+    @php
+        $jsonLdType = 'project';
+        $jsonLdData = [
+            'title' => $project->title,
+            'description' => $project->short_description,
+            'image' => asset($project->thumbnail),
+            'url' => route('projects.show', $project->slug),
+        ];
+    @endphp
+
     <article style="padding-top:5rem;">
         {{-- Hero image --}}
         <div style="height:420px;position:relative;overflow:hidden;">

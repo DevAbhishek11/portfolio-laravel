@@ -86,3 +86,39 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     });
 });
+
+// ── SEO Routes ────────────────────────────────────────────────────────────
+Route::get('/sitemap.xml', function () {
+    $projects = \App\Models\Project::published()
+        ->select('slug', 'updated_at')
+        ->orderByDesc('updated_at')
+        ->get();
+
+    $blogs = \App\Models\Blog::published()
+        ->select('slug', 'updated_at')
+        ->orderByDesc('updated_at')
+        ->get();
+
+    $static = [
+        ['url' => route('home'),          'priority' => '1.0',  'freq' => 'weekly'],
+        ['url' => route('about'),         'priority' => '0.8',  'freq' => 'monthly'],
+        ['url' => route('projects.index'), 'priority' => '0.9',  'freq' => 'weekly'],
+        ['url' => route('services'),      'priority' => '0.8',  'freq' => 'monthly'],
+        ['url' => route('blogs.index'),   'priority' => '0.85', 'freq' => 'weekly'],
+        ['url' => route('contact'),       'priority' => '0.7',  'freq' => 'monthly'],
+    ];
+
+    return response(
+        view('seo.sitemap', compact('static', 'projects', 'blogs')),
+        200,
+        ['Content-Type' => 'application/xml']
+    );
+})->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    return response(
+        view('seo.robots'),
+        200,
+        ['Content-Type' => 'text/plain']
+    );
+})->name('robots');
