@@ -5,9 +5,25 @@ namespace App\Services;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\HasMedia;
 
 class ImageUploadService
 {
+
+    public function addToCollection(
+        HasMedia $model,
+        UploadedFile $file,
+        string $collection = 'images',
+        ?string $name = null
+    ): string {
+        $media = $model
+            ->addMedia($file)
+            ->usingFileName(uniqid() . '.' . $file->getClientOriginalExtension())
+            ->toMediaCollection($collection);
+
+        return $media->getUrl();
+    }
+
     public function upload(
         UploadedFile $file,
         string $directory = 'uploads',

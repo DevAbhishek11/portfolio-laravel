@@ -12,22 +12,44 @@ class TrackPageView
     {
         $response = $next($request);
 
-        // Only track GET requests that return HTML
-        if ($request->isMethod('GET') && ! $request->ajax()) {
-            $ua          = $request->userAgent() ?? '';
-            $deviceType  = $this->detectDevice($ua);
-            $browser     = $this->detectBrowser($ua);
+        if (! $request->isMethod('GET')) {
+            return $response;
+        }
 
-            PageView::create([
+        if (
+            $request->is('assets/*') ||
+            $request->is('css/*') ||
+            $request->is('js/*') ||
+            str_contains($request->path(), '.')
+        ) {
+            return $response;
+        }
+
+        $key = 'pv_' . $request->path();
+
+        if (session()->has($key)) {
+            return $response;
+        }
+
+        session()->put($key, true);
+
+        try {
+            $ua = $request->userAgent() ?? '';
+
+            PageView::insert([
                 'page'        => $request->route()?->getName() ?? $request->path(),
                 'url'         => $request->fullUrl(),
                 'ip_address'  => $request->ip(),
                 'user_agent'  => $ua,
                 'referrer'    => $request->headers->get('referer'),
-                'device_type' => $deviceType,
-                'browser'     => $browser,
+                'device_type' => $this->detectDevice($ua),
+                'browser'     => $this->detectBrowser($ua),
                 'session_id'  => session()->getId(),
+                'created_at'  => now(),
+                'updated_at'  => now(),
             ]);
+        } catch (\Throwable $e) {
+            // silently fail so site never breaks
         }
 
         return $response;

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Project;
+use App\Observers\ProjectObserver;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
@@ -17,7 +19,8 @@ class AppServiceProvider extends ServiceProvider
         if (app()->isProduction()) {
             URL::forceScheme('https');
         }
-
+        Project::observe(ProjectObserver::class);
+        
         Paginator::defaultView('vendor.pagination.tailwind');
 
         Model::shouldBeStrict(! app()->isProduction());

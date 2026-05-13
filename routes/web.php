@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\ContactQueryController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\SkillController;
 
 // ─── Frontend ────────────────────────────────────────────────────────────────
 Route::middleware(['track.pageview'])->group(function () {
@@ -73,6 +74,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/contacts/{id}/status', [ContactQueryController::class, 'updateStatus'])->name('contacts.update-status');
         Route::delete('/contacts/{id}',      [ContactQueryController::class, 'destroy'])->name('contacts.destroy');
         Route::post('/contacts/bulk-action', [ContactQueryController::class, 'bulkAction'])->name('contacts.bulk-action');
+
+        // Inside the admin authenticated group
+        Route::resource('skills', SkillController::class)->except(['show']);
+        Route::post('/skills/reorder', [SkillController::class, 'reorder'])->name('skills.reorder');
+
+        // Public API for radar (no auth needed — data is public)
+        Route::get('/api/skills/radar', [SkillController::class, 'radarApi'])->name('api.skills.radar');
 
         Route::get('/profile',                         [ProfileController::class, 'index'])->name('profile.index');
         Route::get('/profile/edit',                    [ProfileController::class, 'edit'])->name('profile.edit');

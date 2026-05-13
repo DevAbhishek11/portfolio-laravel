@@ -2,6 +2,14 @@
 <html lang="en" class="dark" id="html-root">
 
 <head>
+
+    <script>
+        (function() {
+            var t = localStorage.getItem('theme') || 'dark';
+            document.documentElement.classList.add(t === 'light' ? 'light' : 'dark');
+        })();
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -559,7 +567,7 @@
 
     {{-- Mobile Menu --}}
     <div id="mobile-menu">
-        <button id="close-menu"
+        <button id="close-menu" aria-label="Close navigation menu"
             style="position:absolute;top:1.5rem;right:1.5rem;background:none;border:none;cursor:pointer;color:var(--text-secondary);">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="1.5">
@@ -595,7 +603,7 @@
 
             <div style="display:flex;align-items:center;gap:1rem;">
                 {{-- Theme toggle --}}
-                <button id="theme-toggle"
+                <button id="theme-toggle" aria-label="Toggle dark and light theme"
                     style="background:none;border:1px solid var(--border-color);padding:0.5rem;border-radius:0.5rem;cursor:pointer;color:var(--text-secondary);line-height:0;">
                     <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="display:none;">
@@ -610,7 +618,8 @@
                 </button>
 
                 {{-- Mobile hamburger --}}
-                <button id="open-menu" class="md:hidden"
+                <button id="open-menu" class="md:hidden" aria-label="Open navigation menu" aria-expanded="false"
+                    aria-controls="mobile-menu"
                     style="background:none;border:1px solid var(--border-color);padding:0.5rem;border-radius:0.5rem;cursor:pointer;color:var(--text-secondary);line-height:0;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -626,6 +635,8 @@
 
     {{-- Main content --}}
     <div data-scroll-container id="scroll-container">
+
+        <x-shared.skip-link />
         <main>
             @yield('content')
         </main>

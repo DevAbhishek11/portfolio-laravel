@@ -8,8 +8,9 @@
         <div class="orb" style="width:400px;height:400px;background:rgba(6,182,212,0.08);bottom:-50px;left:-50px;"></div>
 
         {{-- Three.js canvas --}}
-        <canvas id="hero-canvas"
-            style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+        <canvas id="hero-canvas" role="img"
+            aria-label="Animated 3D scene with floating geometric objects and an anime character"
+            class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
 
         <div class="container" style="position:relative;z-index:1;">
             <div style="max-width:700px;">
@@ -20,7 +21,7 @@
                 <h1 class="hero-title font-display reveal delay-1"
                     style="font-size:clamp(3rem,7vw,5.5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;color:var(--text-primary);">
                     Hi, I'm
-                    <span class="grad-text" data-split="chars">
+                    <span class="grad-text">
                         {{ config('portfolio.site_name') }}
                     </span>
 
@@ -80,7 +81,7 @@
 
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.75rem;">
                 @forelse($featuredProjects as $i => $project)
-                    <article class="anime-card reveal delay-{{ $i + 1 }}" style="position:relative;">
+                    <article class="anime-card reveal delay-{{ (int) $i + 1 }}" style="position:relative;">
                         {{-- Thumbnail --}}
                         <div style="height:220px;overflow:hidden;border-radius:0.875rem 0.875rem 0 0;position:relative;">
                             <img src="{{ $project->thumbnail }}" alt="{{ $project->title }}"

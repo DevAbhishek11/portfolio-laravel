@@ -11,13 +11,12 @@ class AboutController extends Controller
     {
         $admin = User::where('is_admin', true)->first();
 
-        $skills = [
-            'Frontend'  => ['React', 'Next.js', 'Vue.js', 'HTML5', 'CSS3', 'Tailwind CSS', 'JavaScript', 'TypeScript'],
-            'Backend'   => ['PHP', 'Laravel', 'Node.js', 'Express.js', 'REST APIs', 'GraphQL'],
-            'Mobile'    => ['React Native', 'Electron'],
-            'Database'  => ['MySQL', 'PostgreSQL', 'MongoDB', 'Redis'],
-            'Tools'     => ['Git', 'Docker', 'Linux', 'AWS', 'Figma', 'Vite'],
-        ];
+        $skills = \App\Models\Skill::where('user_id', $admin?->id ?? 0)
+            ->orderBy('category')
+            ->orderBy('sort_order')
+            ->get();
+
+        $grouped = $skills->groupBy('category');
 
         $timeline = [
             ['year' => '2024', 'title' => 'Senior Full Stack Developer', 'place' => 'Freelance / Remote',        'desc' => 'Building scalable web applications for clients worldwide using Laravel, React, and modern cloud infrastructure.'],
@@ -26,6 +25,6 @@ class AboutController extends Controller
             ['year' => '2019', 'title' => 'B.Sc. Computer Science',      'place' => 'University of Technology',   'desc' => 'Graduated with honours. Thesis on real-time collaborative systems using WebSockets.'],
         ];
 
-        return view('frontend.about', compact('admin', 'skills', 'timeline'));
+        return view('frontend.about', compact('admin', 'skills', 'grouped', 'timeline'));
     }
 }

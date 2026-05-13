@@ -29,10 +29,11 @@
                 @forelse($projects as $i => $project)
                     <article class="anime-card reveal delay-{{ ($i % 3) + 1 }}">
                         <div style="height:200px;overflow:hidden;border-radius:0.875rem 0.875rem 0 0;position:relative;">
-                            <img src="{{ $project->thumbnail }}" alt="{{ $project->title }}"
-                                style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease;"
-                                onmouseover="this.style.transform='scale(1.05)'"
-                                onmouseout="this.style.transform='scale(1)'">
+                            <img src="{{ $project->getFirstMediaUrl('thumbnail', 'card') }}"
+                                srcset="{{ $project->getThumbnailSrcset() }}"
+                                sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" alt="{{ $project->title }}"
+                                loading="lazy" decoding="async"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                             <div
                                 style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(10,10,15,0.85));">
                             </div>

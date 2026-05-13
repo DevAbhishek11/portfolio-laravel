@@ -104,6 +104,23 @@
         </div>
     </section>
 
+    {{-- Skills section — full replacement --}}
+    <section class="py-24 lg:py-32">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="section-tag justify-center">Tech Stack</div>
+                <h2 class="font-display text-4xl lg:text-5xl font-black text-txt-primary reveal delay-1">
+                    Skills & <span class="grad-text">Proficiency</span>
+                </h2>
+                <p class="text-txt-secondary mt-4 max-w-md mx-auto reveal delay-2">
+                    Hover the radar points to see exact proficiency levels. Filter by category below.
+                </p>
+            </div>
+
+            <x-frontend.skills-radar :skills="$skills" :grouped="$grouped" />
+        </div>
+    </section>
+
     <style>
         @keyframes spin {
             from {

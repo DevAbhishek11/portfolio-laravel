@@ -31,12 +31,6 @@
 
     @stack('styles')
 
-    {{--
-        Absolute minimum <style> block — only what Tailwind cannot express:
-        1. font-family override on body
-        2. sidebar collapsed state (class-toggled by JS)
-        3. thin custom scrollbar widths
-    --}}
     <style>
         * {
             box-sizing: border-box;
@@ -94,17 +88,7 @@
 
 <body class="h-screen overflow-hidden bg-[#17171f] text-zinc-200">
 
-    {{-- ════════════════════════════════
-         SHELL  — locked to 100 vh
-    ════════════════════════════════ --}}
     <div class="flex h-screen overflow-hidden">
-
-
-        {{-- ════════════════════════════════
-             SIDEBAR
-             h-screen + sticky top-0 → never scrolls with content
-             flex-col so logout pin stays at bottom
-        ════════════════════════════════ --}}
         <aside id="sidebar"
             class="flex flex-col h-screen sticky top-0 flex-shrink-0 overflow-hidden transition-all duration-300 bg-[#17171f]"
             style="width:260px; min-width:260px;">
@@ -248,14 +232,8 @@
                 </form>
             </div>
 
-        </aside>{{-- /#sidebar --}}
+        </aside>
 
-
-        {{-- ════════════════════════════════
-             MAIN COLUMN
-             flex-col → stacks topbar / scroll-zone / (footer inside scroll-zone)
-             h-screen + overflow-hidden → columns control their own overflow
-        ════════════════════════════════ --}}
         <div class="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
 
             {{-- ── TOPBAR — flex-shrink-0 so it never compresses ── --}}
@@ -357,14 +335,8 @@
                     </div>{{-- /dropdown --}}
                 </div>{{-- /right controls --}}
 
-            </header>{{-- /.topbar --}}
-
-
-            {{-- ════════════════════════════════
-                 SCROLL ZONE
-                 flex-1 + min-h-0 → takes all space between topbar and viewport bottom
-                 overflow-y-auto  → ONLY this region scrolls
-            ════════════════════════════════ --}}
+            </header>
+            
             <div class="scroll-zone flex-1 overflow-y-auto min-h-0 p-4 rounded-2xl bg-white/10 mr-2">
 
                 {{-- Page content — pr-8 gives the right-side margin you asked for --}}
