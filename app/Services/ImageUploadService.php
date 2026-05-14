@@ -3,52 +3,31 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Support\Str;
 
 class ImageUploadService
 {
-
-    public function addToCollection(
-        HasMedia $model,
-        UploadedFile $file,
-        string $collection = 'images',
-        ?string $name = null
-    ): string {
-        $media = $model
-            ->addMedia($file)
-            ->usingFileName(uniqid() . '.' . $file->getClientOriginalExtension())
-            ->toMediaCollection($collection);
-
-        return $media->getUrl();
-    }
-
-    public function upload(
-        UploadedFile $file,
-        string $directory = 'uploads',
-        int $maxWidth = 1920
-    ): string {
-        $filename  = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        $path      = $file->storeAs("public/{$directory}", $filename);
-
-        return Storage::url($path);
-    }
-
-    public function delete(?string $url): void
+    public function upload(UploadedFile $file, string $directory = 'projects'): string
     {
-        if (! $url) return;
+        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
 
-        // Convert URL back to storage path
-        $path = str_replace('/storage/', 'public/', $url);
-        Storage::delete($path);
+        // Store in public disk
+        $file->storeAs("public/{$directory}", $filename, 'public');
+
+        return "storage/{$directory}/{$filename}";
     }
 
-    public function uploadMultiple(array $files, string $directory): array
+    public function delete(?string $path): bool
     {
-        return array_map(
-            fn($file) => $this->upload($file, $directory),
-            $files
-        );
+        if (empty($path)) return false;
+
+        $storagePath = str_replace(['storage/', '/storage/'], 'public/', $path);
+
+        if (Storage::disk('public')->exists($storagePath)) {
+            return Storage::disk('public')->delete($storagePath);
+        }
+
+        return false;
     }
 }

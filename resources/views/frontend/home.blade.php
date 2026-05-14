@@ -8,9 +8,9 @@
         <div class="orb" style="width:400px;height:400px;background:rgba(6,182,212,0.08);bottom:-50px;left:-50px;"></div>
 
         {{-- Three.js canvas --}}
-        <canvas id="hero-canvas" role="img"
-            aria-label="Animated 3D scene with floating geometric objects and an anime character"
-            class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+        <canvas id="hero-canvas" role="img" aria-label="Animated 3D scene"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;">
+        </canvas>
 
         <div class="container" style="position:relative;z-index:1;">
             <div style="max-width:700px;">
@@ -18,13 +18,9 @@
                     <span>Full Stack Developer</span>
                 </div>
 
-                <h1 class="hero-title font-display reveal delay-1"
-                    style="font-size:clamp(3rem,7vw,5.5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;color:var(--text-primary);">
-                    Hi, I'm
-                    <span class="grad-text">
-                        {{ config('portfolio.site_name') }}
-                    </span>
-
+                <h1 class="hero-title font-display" data-split="chars"
+                    style="font-size:clamp(3rem,7vw,5.5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;">
+                    Hi, I'm <span class="grad-text">{{ config('portfolio.site_name') }}</span>
                 </h1>
 
                 <p class="reveal delay-2"

@@ -225,8 +225,8 @@
                                 <td class="text-zinc-200 font-medium">{{ Str::limit($project->title, 25) }}</td>
                                 <td class="text-zinc-400 text-xs font-mono">{{ number_format($project->view_count) }}</td>
                                 <td>
-                                    <span
-                                        class="w-2 h-2 rounded-full inline-block {{ $project->is_published ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-zinc-600' }}"></span>
+                                    {{-- <span
+                                        class="w-2 h-2 rounded-full inline-block {{ $project->is_published ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-zinc-600' }}"></span> --}}
                                 </td>
                             </tr>
                         @empty

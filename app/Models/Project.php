@@ -25,6 +25,7 @@ class Project extends Model implements HasMedia
         'category',
         'status',
         'is_featured',
+        'is_published',
         'start_date',
         'end_date',
         'sort_order',

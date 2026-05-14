@@ -22,23 +22,35 @@ const ScrollAnimations = (() => {
       return { ...scrollerConfig, trigger, ...extra };
     }
 
-    // ── 1. Hero text stagger ──────────────────────────────────────────
+    // ── Hero heading: word-by-word (NOT char-by-char, preserves inner spans) ──
     const heroTitle = document.querySelector(".hero-title");
     if (heroTitle) {
-      const words = heroTitle.innerHTML.split(" ");
-      heroTitle.innerHTML = words
-        .map(
-          (w) =>
-            `<span class="word-wrap" style="display:inline-block;overflow:hidden;vertical-align:bottom;"><span class="word-inner" style="display:inline-block;">${w}&nbsp;</span></span>`,
-        )
-        .join("");
-      gsap.from(".word-inner", {
-        yPercent: 110,
-        duration: 0.9,
-        stagger: 0.08,
-        ease: "power3.out",
-        delay: 0.3,
-      });
+      gsap.fromTo(
+        heroTitle,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          delay: 0.4,
+        },
+      );
+      // Animate the gradient span separately for extra pop
+      const gradSpan = heroTitle.querySelector(".grad-text");
+      if (gradSpan) {
+        gsap.fromTo(
+          gradSpan,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: "power3.out",
+            delay: 0.7,
+          },
+        );
+      }
     }
 
     // ── 2. Fade-up elements ───────────────────────────────────────────
@@ -141,29 +153,71 @@ const ScrollAnimations = (() => {
       );
     });
 
-    // ── 7. Section headers — char-by-char ─────────────────────────────
+    // ── 7. Section headers — char-by-char (safe version) ──────────────────
     document.querySelectorAll('[data-split="chars"]').forEach((el) => {
-      const text = el.textContent;
-      el.innerHTML = "";
-      el.setAttribute("aria-label", text);
+      // Collect segments: plain text nodes and preserved HTML children
+      const segments = [];
+      el.childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          // Split text nodes into individual characters
+          [...node.textContent].forEach((char) => {
+            segments.push({
+              type: "char",
+              char: char === " " ? "\u00A0" : char,
+            });
+          });
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          // Preserve the entire element (e.g. <span class="grad-text">)
+          // but also split its text into chars
+          const innerText = node.textContent;
+          const className = node.className;
+          const tagName = node.tagName.toLowerCase();
+          [...innerText].forEach((char, i) => {
+            segments.push({
+              type: "html-char",
+              char: char === " " ? "\u00A0" : char,
+              className: className,
+              tagName: tagName,
+              isFirst: i === 0,
+              isLast: i === innerText.length - 1,
+            });
+          });
+        }
+      });
 
-      [...text].forEach((char) => {
+      // Store accessible label
+      el.setAttribute("aria-label", el.textContent);
+      el.innerHTML = "";
+
+      // Rebuild with wrapped chars
+      segments.forEach((seg) => {
         const outer = document.createElement("span");
         const inner = document.createElement("span");
         outer.style.cssText =
           "display:inline-block;overflow:hidden;vertical-align:bottom;";
         inner.style.cssText = "display:inline-block;";
-        inner.textContent = char === " " ? "\u00A0" : char;
+        inner.textContent = seg.char;
+
+        // Apply the original element's class to inner span
+        if (seg.type === "html-char" && seg.className) {
+          inner.className = seg.className;
+        }
+
         outer.appendChild(inner);
         el.appendChild(outer);
       });
 
-      gsap.from(el.querySelectorAll("span span"), {
+      // Animate
+      gsap.from(el.querySelectorAll("span > span"), {
         yPercent: 120,
         duration: 0.7,
         stagger: 0.025,
         ease: "power3.out",
-        scrollTrigger: st(el, { start: "top 80%" }),
+        scrollTrigger: {
+          scroller: document.querySelector("[data-scroll-container]") || window,
+          trigger: el,
+          start: "top 80%",
+        },
       });
     });
 

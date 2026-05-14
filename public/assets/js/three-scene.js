@@ -56,10 +56,19 @@ const ThreeScene = (() => {
   function _setSize() {
     const { canvas, renderer, camera } = state;
     if (!canvas) return;
-    const w = canvas.clientWidth || window.innerWidth;
-    const h = canvas.clientHeight || window.innerHeight;
+
+    // Use the canvas's parent (the section) for dimensions
+    const parent = canvas.parentElement;
+    const w = parent ? parent.clientWidth : window.innerWidth;
+    const h = parent ? parent.clientHeight : window.innerHeight;
+
     state.size = { w, h };
     renderer.setSize(w, h, false);
+
+    // Also set canvas style dimensions explicitly
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+
     if (camera) {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();

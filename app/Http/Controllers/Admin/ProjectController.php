@@ -54,28 +54,34 @@ class ProjectController extends Controller
             'tech_icons.*'      => 'nullable|string|max:255',
         ]);
 
-        $data['slug']    = $data['slug'] ?: Str::slug($data['title']);
-        $data['user_id'] = session('admin_user_id');
+        $data['slug']        = $data['slug'] ?: Str::slug($data['title']);
+        $data['user_id']     = session('admin_user_id');
         $data['is_featured'] = $request->boolean('is_featured');
 
-        // Upload thumbnail
+        // 🔥 Remove fields that don't exist in projects table
+        unset($data['tech_names'], $data['tech_categories'], $data['tech_icons'], $data['images']);
+
+        // Upload Thumbnail
         $data['thumbnail'] = $this->imageService->upload($request->file('thumbnail'), 'projects');
 
+        // Create Project
         $project = Project::create($data);
 
-        // Additional images
+        // Additional Images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
                 $path = $this->imageService->upload($image, 'projects');
+
                 ProjectImage::create([
                     'project_id' => $project->id,
                     'image_path' => $path,
                     'sort_order' => $index,
+                    'alt_text'   => $data['title'] . ' - Image ' . ($index + 1),
                 ]);
             }
         }
 
-        // Tech stacks
+        // Tech Stacks
         $this->syncTechStacks($project, $request);
 
         return redirect()->route('admin.projects.index')
@@ -121,8 +127,20 @@ class ProjectController extends Controller
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
         $data['is_featured'] = $request->boolean('is_featured');
 
+        // === Remove fields that are NOT in $fillable ===
+        unset(
+            $data['tech_names'],
+            $data['tech_categories'],
+            $data['tech_icons'],
+            $data['images']           // safety
+        );
+
+        // Handle Thumbnail
         if ($request->hasFile('thumbnail')) {
-            $this->imageService->delete($project->thumbnail);
+            // Optional: Delete old thumbnail if not using Media Library yet
+            if ($project->thumbnail) {
+                $this->imageService->delete($project->thumbnail);
+            }
             $data['thumbnail'] = $this->imageService->upload($request->file('thumbnail'), 'projects');
         } else {
             unset($data['thumbnail']);
@@ -130,14 +148,18 @@ class ProjectController extends Controller
 
         $project->update($data);
 
+        // Additional Images
         if ($request->hasFile('images')) {
             $existingCount = $project->images()->count();
+
             foreach ($request->file('images') as $index => $image) {
                 $path = $this->imageService->upload($image, 'projects');
+
                 ProjectImage::create([
                     'project_id' => $project->id,
                     'image_path' => $path,
                     'sort_order' => $existingCount + $index,
+                    'alt_text'   => $project->title ?? 'Project Image',
                 ]);
             }
         }
