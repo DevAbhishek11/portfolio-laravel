@@ -80,7 +80,7 @@
                     <article class="anime-card reveal delay-{{ (int) $i + 1 }}" style="position:relative;">
                         {{-- Thumbnail --}}
                         <div style="height:220px;overflow:hidden;border-radius:0.875rem 0.875rem 0 0;position:relative;">
-                            <img src="{{ $project->thumbnail }}" alt="{{ $project->title }}"
+                            <img src="{{ asset('/' .  $project->thumbnail ) }}" alt="{{ $project->title }}"
                                 style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease;">
                             <div
                                 style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(10,10,15,0.9));">
@@ -204,7 +204,7 @@
                         <article class="anime-card reveal delay-{{ $i + 1 }}">
                             @if ($blog->featured_image)
                                 <div style="height:180px;overflow:hidden;border-radius:0.875rem 0.875rem 0 0;">
-                                    <img src="{{ $blog->featured_image }}" alt="{{ $blog->title }}"
+                                    <img src="{{ asset('/' .  $blog->featured_image ) }}" alt="{{ $blog->title }}"
                                         style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;">
                                 </div>
                             @endif

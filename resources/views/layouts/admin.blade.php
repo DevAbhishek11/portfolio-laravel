@@ -287,7 +287,7 @@
                                         flex-shrink-0 overflow-hidden"
                                 style="background:linear-gradient(135deg,#8b5cf6,#06b6d4)">
                                 @if ($adminUser->avatar)
-                                    <img src="{{ $adminUser->avatar }}" class="w-full h-full object-cover">
+                                    <img src="{{ asset('/' . $adminUser->avatar) }}" class="w-full h-full object-cover">
                                 @else
                                     <span class="text-white font-semibold text-xs">
                                         {{ substr($adminUser->name, 0, 1) }}

@@ -22,7 +22,7 @@ class ContactQueries extends Model
 
     public function replies()
     {
-        return $this->hasMany(ContactReplies::class);
+        return $this->hasMany(ContactReplies::class, 'contact_query_id');
     }
 
     public function scopeUnread($query)

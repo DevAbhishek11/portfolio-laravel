@@ -16,7 +16,7 @@
         {{-- Featured image --}}
         @if ($blog->featured_image)
             <div style="height:420px;position:relative;overflow:hidden;">
-                <img src="{{ $blog->featured_image }}" alt="{{ $blog->title }}"
+                <img src="{{ asset('/' . $blog->featured_image) }}" alt="{{ $blog->title }}"
                     style="width:100%;height:100%;object-fit:cover;">
                 <div
                     style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,var(--bg-primary));">

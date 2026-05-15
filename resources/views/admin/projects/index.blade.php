@@ -93,7 +93,7 @@
                             <td class="px-6 py-4">
                                 <div
                                     class="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-600 group-hover:border-indigo-500 transition-colors shadow-inner bg-slate-900">
-                                    <img src="{{ $project->thumbnail }}" alt="" class="w-full h-full object-cover">
+                                    <img src="{{ asset('/' . $project->thumbnail ) }}" alt="" class="w-full h-full object-cover">
                                 </div>
                             </td>
 

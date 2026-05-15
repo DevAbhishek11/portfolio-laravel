@@ -35,7 +35,7 @@
                     <div
                         class="w-full h-full rounded-[calc(1rem-1px)] overflow-hidden bg-slate-900 flex items-center justify-center">
                         @if ($user->avatar)
-                            <img src="{{ $user->avatar }}" class="w-full h-full object-cover">
+                            <img src="{{ asset('/' . $user->avatar) }}" class="w-full h-full object-cover">
                         @else
                             <span class="text-white text-4xl font-bold italic">{{ substr($user->name, 0, 1) }}</span>
                         @endif

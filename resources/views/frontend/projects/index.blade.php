@@ -29,7 +29,7 @@
                 @forelse($projects as $i => $project)
                     <article class="anime-card reveal delay-{{ ($i % 3) + 1 }}">
                         <div style="height:200px;overflow:hidden;border-radius:0.875rem 0.875rem 0 0;position:relative;">
-                            <img src="{{ $project->getFirstMediaUrl('thumbnail', 'card') }}"
+                            <img src="{{ asset('/' . $project->getFirstMediaUrl('thumbnail', 'card')) }}"
                                 srcset="{{ $project->getThumbnailSrcset() }}"
                                 sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" alt="{{ $project->title }}"
                                 loading="lazy" decoding="async"

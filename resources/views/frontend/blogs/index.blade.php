@@ -37,7 +37,7 @@
                 <div class="anime-card reveal"
                     style="display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:2.5rem;overflow:hidden;">
                     @if ($featured->featured_image)
-                        <img src="{{ $featured->featured_image }}" alt="{{ $featured->title }}"
+                        <img src="{{ asset('/' . $featured->featured_image ) }}" alt="{{ $featured->title }}"
                             style="width:100%;height:300px;object-fit:cover;">
                     @endif
                     <div style="padding:2.5rem;display:flex;flex-direction:column;justify-content:center;">
@@ -65,7 +65,7 @@
                     <article class="anime-card reveal delay-{{ ($i % 3) + 1 }}">
                         @if ($blog->featured_image)
                             <div style="height:190px;overflow:hidden;border-radius:0.875rem 0.875rem 0 0;">
-                                <img src="{{ $blog->featured_image }}" alt="{{ $blog->title }}"
+                                <img src="{{ asset('/' . $blog->featured_image ) }}" alt="{{ $blog->title }}"
                                     style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;"
                                     onmouseover="this.style.transform='scale(1.05)'"
                                     onmouseout="this.style.transform='scale(1)'">

@@ -14,7 +14,7 @@
     <article style="padding-top:5rem;">
         {{-- Hero image --}}
         <div style="height:420px;position:relative;overflow:hidden;">
-            <img src="{{ $project->thumbnail }}" alt="{{ $project->title }}" style="width:100%;height:100%;object-fit:cover;">
+            <img src="{{ asset('/' . $project->thumbnail ) }}" alt="{{ $project->title }}" style="width:100%;height:100%;object-fit:cover;">
             <div
                 style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,15,0.3),var(--bg-primary));">
             </div>
@@ -48,7 +48,7 @@
                         <div
                             style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.75rem;margin-bottom:2rem;">
                             @foreach ($project->images as $img)
-                                <img src="{{ $img->image_path }}" alt="{{ $img->alt_text }}"
+                                <img src="{{ asset('/' .  $img->image_path ) }}" alt="{{ $img->alt_text }}"
                                     style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:0.75rem;border:1px solid var(--border-color);cursor:zoom-in;"
                                     onclick="openLightbox(this.src)">
                             @endforeach
@@ -133,7 +133,7 @@
                             <a href="{{ route('projects.show', $rel->slug) }}"
                                 class="anime-card reveal delay-{{ $i + 1 }}"
                                 style="text-decoration:none;display:block;">
-                                <img src="{{ $rel->thumbnail }}"
+                                <img src="{{ asset('/' . $rel->thumbnail) }}"
                                     style="width:100%;height:150px;object-fit:cover;border-radius:0.875rem 0.875rem 0 0;">
                                 <div style="padding:1rem;">
                                     <h3 style="color:var(--text-primary);font-size:0.95rem;font-weight:600;">

@@ -13,7 +13,7 @@ class ImageUploadService
         $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
 
         // Store in public disk
-        $file->storeAs("public/{$directory}", $filename, 'public');
+        $file->storeAs("{$directory}", $filename, 'public');
 
         return "storage/{$directory}/{$filename}";
     }
@@ -22,7 +22,7 @@ class ImageUploadService
     {
         if (empty($path)) return false;
 
-        $storagePath = str_replace(['storage/', '/storage/'], 'public/', $path);
+        $storagePath = str_replace(['storage/', '/storage/'], '', $path);
 
         if (Storage::disk('public')->exists($storagePath)) {
             return Storage::disk('public')->delete($storagePath);
