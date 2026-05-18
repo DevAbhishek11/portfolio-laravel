@@ -107,7 +107,7 @@
 
                 {{-- Contact Info --}}
                 <div class="reveal-right" style="display:flex;flex-direction:column;gap:1.25rem;">
-                    <canvas id="contact-canvas" style="width:280px;height:200px;border-radius:1rem;">
+                    <div id="contact-info" style="display:flex;flex-direction:column;gap:1.25rem;">
                         @foreach ([['📧', 'Email', config('portfolio.site_email'), 'mailto:' . config('portfolio.site_email')], ['📍', 'Location', config('portfolio.site_location'), null], ['📱', 'Phone', config('portfolio.site_phone'), 'tel:' . config('portfolio.site_phone')]] as [$icon, $label, $value, $href])
                             @if ($value)
                                 <div class="anime-card" style="padding:1.25rem;display:flex;align-items:center;gap:1rem;">
@@ -162,7 +162,7 @@
                                 time:
                                 within 24 hours</p>
                         </div>
-                    </canvas>
+                    </div>
                 </div>
             </div>
         </div>

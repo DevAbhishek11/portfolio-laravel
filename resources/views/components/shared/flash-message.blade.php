@@ -1,5 +1,5 @@
 @if (session('success'))
-    <div class="flash-msg flash-success" id="flash-msg">
+    <div class="flash-msg flash-success" data-flash>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
             stroke="currentColor" stroke-width="2" style="flex-shrink:0">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -10,7 +10,7 @@
     </div>
 @endif
 @if (session('error'))
-    <div class="flash-msg flash-error" id="flash-msg">
+    <div class="flash-msg flash-error" data-flash style="bottom:5.5rem;">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
             stroke="currentColor" stroke-width="2" style="flex-shrink:0">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -66,8 +66,9 @@
 </style>
 <script>
     setTimeout(() => {
-        const el = document.getElementById('flash-msg');
-        if (el) el.style.opacity = '0';
-        setTimeout(() => el?.remove(), 400);
+        document.querySelectorAll('[data-flash]').forEach(el => {
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 400);
+        });
     }, 5000);
 </script>

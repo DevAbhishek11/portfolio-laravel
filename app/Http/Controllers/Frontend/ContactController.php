@@ -7,6 +7,7 @@ use App\Models\ContactQueries as ContactQuery;
 use App\Models\User;
 use App\Services\MailService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 
 class ContactController extends Controller
@@ -48,13 +49,16 @@ class ContactController extends Controller
             'status'     => 'unread',
         ]);
 
-        // Notify admin
+        // Notify admin — log failure but don't break UX
         $admin = User::where('is_admin', true)->first();
         if ($admin) {
             try {
                 $this->mailService->sendContactReceived($admin, $query);
-            } catch (\Exception $e) {
-                // Silent fail — don't break UX if mail is misconfigured
+            } catch (\Throwable $e) {
+                Log::error('Contact notification email failed', [
+                    'query_id' => $query->id,
+                    'error'    => $e->getMessage(),
+                ]);
             }
         }
 

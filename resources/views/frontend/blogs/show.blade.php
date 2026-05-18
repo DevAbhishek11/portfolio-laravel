@@ -12,7 +12,7 @@
         ];
     @endphp
 
-    <article style="padding-top:5rem;">
+    <article style="padding:5rem 0;">
         {{-- Featured image --}}
         @if ($blog->featured_image)
             <div style="height:420px;position:relative;overflow:hidden;">
@@ -194,8 +194,8 @@
                             @enderror
                         </div>
                         <button type="submit" class="btn-anime">Post Comment →</button>
-                        <p style="color:var(--text-secondary);font-size:0.78rem;margin-top:0.75rem;">Comments are moderated
-                            and appear after approval.</p>
+                        {{-- <p style="color:var(--text-secondary);font-size:0.78rem;margin-top:0.75rem;">Comments are moderated
+                            and appear after approval.</p> --}}
                     </form>
                 </div>
             </div>

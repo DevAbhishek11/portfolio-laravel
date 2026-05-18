@@ -8,6 +8,7 @@ use App\Models\ContactReplies as ContactReply;
 use App\Models\User;
 use App\Services\MailService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ContactQueryController extends Controller
 {
@@ -63,7 +64,17 @@ class ContactQueryController extends Controller
 
         $contact->update(['status' => 'replied']);
 
-        $this->mailService->sendContactReply($contact, $reply);
+        try {
+            $this->mailService->sendContactReply($contact, $reply);
+        } catch (\Throwable $e) {
+            Log::error('Contact reply email failed', [
+                'query_id' => $contact->id,
+                'reply_id' => $reply->id,
+                'error'    => $e->getMessage(),
+            ]);
+            return redirect()->route('admin.contacts.show', $id)
+                ->with('error', 'Reply saved, but the email could not be sent. Check mail configuration.');
+        }
 
         return redirect()->route('admin.contacts.show', $id)
             ->with('success', 'Reply sent successfully.');

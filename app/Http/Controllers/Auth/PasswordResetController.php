@@ -22,6 +22,7 @@ class PasswordResetController extends Controller
     public function reset(Request $request)
     {
         $request->validate([
+            'email'    => 'required|email',
             'token'    => 'required|string',
             'otp'      => 'required|digits:6',
             'password' => [
@@ -34,19 +35,21 @@ class PasswordResetController extends Controller
             ],
         ]);
 
-        // Find the reset record
-        $record = DB::table('password_reset_tokens')
-            ->where('email', $request->email ?? '')
+        // Look up record by email (hidden field in form), then verify token hash.
+        $resetRecord = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
             ->first();
 
-        // We embed email in the form (hidden field)
-        $resetRecord = DB::table('password_reset_tokens')->get()->first(function ($r) use ($request) {
-            return Hash::check($request->token, $r->token)
-                && now()->diffInMinutes($r->created_at) <= config('portfolio.admin.reset_expiry_minutes', 60);
-        });
+        $expiryMinutes = (int) config('portfolio.admin.reset_expiry_minutes', 60);
 
-        if (! $resetRecord) {
-            return back()->with('error', 'Invalid or expired reset link. Please request a new one.');
+        if (
+            ! $resetRecord
+            || ! Hash::check($request->token, $resetRecord->token)
+            || abs(\Carbon\Carbon::parse($resetRecord->created_at)->diffInMinutes(now())) > $expiryMinutes
+        ) {
+            return back()
+                ->withInput($request->only('email'))
+                ->with('error', 'Invalid or expired reset link. Please request a new one.');
         }
 
         $user = User::where('email', $resetRecord->email)->where('is_admin', true)->first();

@@ -9,7 +9,7 @@
             document.documentElement.classList.add(t === 'light' ? 'light' : 'dark');
         })();
     </script>
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -43,7 +43,6 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    {{-- Locomotive Scroll CSS --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/anime-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/animations.css') }}">
@@ -733,16 +732,11 @@
         }
     </style>
 
-    {{-- CDN Scripts --}}
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script> --}}
-
+    {{-- Decorative canvases (kept for non-3D effects like sparkle/sakura) --}}
     <canvas id="sparkle-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:1;"></canvas>
     <canvas id="sakura-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:2;"></canvas>
 
-    {{-- CDN Scripts --}}
+    {{-- CDN Scripts (3D / WebGL removed; only animation + scroll helpers kept) --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
@@ -759,7 +753,7 @@
     <script src="{{ asset('assets/js/scene-quality.js') }}"></script>
     <script src="{{ asset('assets/js/three-boot.js') }}"></script>
 
-    {{-- Our JS files --}}
+    {{-- Site JS (3D + locomotive scripts removed) --}}
     <script src="{{ asset('assets/js/preloader.js') }}"></script>
     <script src="{{ asset('assets/js/cursor.js') }}"></script>
     <script src="{{ asset('assets/js/locomotive-init.js') }}"></script>

@@ -7,11 +7,6 @@
         <div class="orb" style="width:600px;height:600px;background:rgba(139,92,246,0.12);top:-100px;right:-100px;"></div>
         <div class="orb" style="width:400px;height:400px;background:rgba(6,182,212,0.08);bottom:-50px;left:-50px;"></div>
 
-        {{-- Three.js canvas --}}
-        <canvas id="hero-canvas" role="img" aria-label="Animated 3D scene"
-            style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;">
-        </canvas>
-
         <div class="container" style="position:relative;z-index:1;">
             <div style="max-width:700px;">
                 <div class="section-tag reveal" data-anime="fade-up">
@@ -137,7 +132,7 @@
                 @endforelse
             </div>
 
-            <div style="text-align:center;margin-top:3rem;" class="reveal">
+            <div style="text-align:center;margin:3rem 0;" class="reveal">
                 <a href="{{ route('projects.index') }}" class="btn-outline">View All Projects →</a>
             </div>
         </div>
@@ -258,128 +253,6 @@
             </a>
         </div>
     </section>
-
-    {{-- @push('scripts')
-        <script>
-            // ── Hero Three.js particle scene ─────────────────────────────────────────────
-            (function() {
-                const canvas = document.getElementById('hero-canvas');
-                const renderer = new THREE.WebGLRenderer({
-                    canvas,
-                    alpha: true,
-                    antialias: true
-                });
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
-
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, canvas.offsetWidth / canvas.offsetHeight, 0.1, 100);
-                camera.position.z = 5;
-
-                // Floating geometric objects
-                const objects = [];
-                const geometries = [
-                    new THREE.TorusGeometry(0.5, 0.15, 16, 60),
-                    new THREE.IcosahedronGeometry(0.5),
-                    new THREE.OctahedronGeometry(0.55),
-                    new THREE.BoxGeometry(0.7, 0.7, 0.7),
-                    new THREE.TorusKnotGeometry(0.4, 0.1, 80, 16),
-                ];
-                const colors = [0x8b5cf6, 0x06b6d4, 0xf43f5e, 0xeab308, 0x22c55e];
-
-                geometries.forEach((geo, i) => {
-                    const mat = new THREE.MeshStandardMaterial({
-                        color: colors[i % colors.length],
-                        wireframe: i % 2 === 0,
-                        opacity: 0.6,
-                        transparent: true,
-                    });
-                    const mesh = new THREE.Mesh(geo, mat);
-                    mesh.position.set(
-                        (Math.random() - 0.5) * 12,
-                        (Math.random() - 0.5) * 7,
-                        (Math.random() - 0.5) * 4 - 1
-                    );
-                    mesh.userData = {
-                        rotX: (Math.random() - 0.5) * 0.01,
-                        rotY: (Math.random() - 0.5) * 0.01,
-                        floatAmp: Math.random() * 0.3 + 0.1,
-                        floatSpeed: Math.random() * 0.5 + 0.3,
-                        floatOffset: Math.random() * Math.PI * 2,
-                    };
-                    scene.add(mesh);
-                    objects.push(mesh);
-                });
-
-                // Particles
-                const pCount = window.innerWidth < 768 ? 150 : 400;
-                const pGeo = new THREE.BufferGeometry();
-                const pPos = new Float32Array(pCount * 3);
-                for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 20;
-                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-                const pMat = new THREE.PointsMaterial({
-                    color: 0x8b5cf6,
-                    size: 0.04,
-                    transparent: true,
-                    opacity: 0.6
-                });
-                scene.add(new THREE.Points(pGeo, pMat));
-
-                // Lights
-                scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-                const dLight = new THREE.DirectionalLight(0x8b5cf6, 1.5);
-                dLight.position.set(5, 5, 5);
-                scene.add(dLight);
-                scene.add(Object.assign(new THREE.PointLight(0x06b6d4, 1), {
-                    position: {
-                        x: -5,
-                        y: 3,
-                        z: 2,
-                        set(x, y, z) {
-                            this.x = x;
-                            this.y = y;
-                            this.z = z;
-                        }
-                    }
-                }));
-
-                // Mouse
-                let mouse = {
-                    x: 0,
-                    y: 0
-                };
-                window.addEventListener('mousemove', e => {
-                    mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
-                    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
-                });
-
-                // Resize
-                window.addEventListener('resize', () => {
-                    camera.aspect = canvas.offsetWidth / canvas.offsetHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
-                });
-
-                // Animate
-                const clock = new THREE.Clock();
-
-                function animate() {
-                    requestAnimationFrame(animate);
-                    const t = clock.getElapsedTime();
-                    objects.forEach(obj => {
-                        obj.rotation.x += obj.userData.rotX;
-                        obj.rotation.y += obj.userData.rotY;
-                        obj.position.y += Math.sin(t * obj.userData.floatSpeed + obj.userData.floatOffset) * 0.002;
-                    });
-                    camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.05;
-                    camera.position.y += (-mouse.y * 0.3 - camera.position.y) * 0.05;
-                    camera.lookAt(scene.position);
-                    renderer.render(scene, camera);
-                }
-                animate();
-            })();
-        </script>
-    @endpush --}}
 
     <style>
         @keyframes scrollPulse {

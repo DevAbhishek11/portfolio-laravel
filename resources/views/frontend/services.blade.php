@@ -66,7 +66,7 @@
                 style="background:var(--bg-secondary);border-radius:1.5rem;border:1px solid var(--border-color);padding:3rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:2rem;text-align:center;">
                 @foreach ($stats as $i => $stat)
                     <div class="reveal delay-{{ $i + 1 }}">
-                        <div class="grad-text font-display" style="font-size:2.5rem;font-weight:900;" data-counter={{ $stat['value'] }} data-suffix="+">{{ $stat['value'] }}
+                        <div class="grad-text font-display" style="font-size:2.5rem;font-weight:900;" data-counter="{{ $stat['value'] }}" data-suffix="+">{{ $stat['value'] }}
                         </div>
                         <p style="color:var(--text-secondary);font-size:0.875rem;margin-top:0.25rem;">{{ $stat['label'] }}
                         </p>

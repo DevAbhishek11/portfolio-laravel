@@ -33,10 +33,12 @@ class Project extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'is_featured' => 'boolean',
-        'start_date'  => 'date',
-        'end_date'    => 'date',
-        'view_count'  => 'integer',
+        'is_featured'  => 'boolean',
+        'is_published' => 'boolean',
+        'start_date'   => 'date',
+        'end_date'     => 'date',
+        'view_count'   => 'integer',
+        'sort_order'   => 'integer',
     ];
 
     public function user()

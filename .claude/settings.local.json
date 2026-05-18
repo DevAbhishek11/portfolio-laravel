@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell *)",
+      "Bash(php -l app/Mail/TwoFactorOtpMail.php)",
+      "Bash(php -l app/Http/Controllers/Frontend/ContactController.php)",
+      "Bash(php -l app/Http/Controllers/Admin/ContactQueryController.php)",
+      "Bash(php -l app/Http/Controllers/Auth/PasswordResetController.php)",
+      "Bash(php -l app/Http/Controllers/Frontend/HomeController.php)",
+      "Bash(php artisan *)"
+    ]
+  }
+}

@@ -128,7 +128,6 @@ class ProfileController extends Controller
             ]);
         }
 
-        // Email OTP — send a test OTP
         $user->update(['two_factor_method' => 'email_otp']);
         $otp = $this->otpService->generate($user, 'login');
         $this->mailService->sendTwoFactorOtp($user, $otp);

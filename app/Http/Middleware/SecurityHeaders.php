@@ -15,8 +15,6 @@ class SecurityHeaders
         'https://cdn.tailwindcss.com',
         'https://cdnjs.cloudflare.com',
         'https://cdn.jsdelivr.net',
-        'https://unpkg.com',
-        'https://cdn.quilljs.com',
     ];
 
     private array $allowedStyleDomains = [
@@ -24,18 +22,14 @@ class SecurityHeaders
         "'unsafe-inline'",
         'https://fonts.googleapis.com',
         'https://cdn.tailwindcss.com',
-        'https://cdnjs.cloudflare.com',
         'https://cdn.jsdelivr.net',
-        'https://cdn.quilljs.com',
     ];
 
     private array $allowedImgDomains = [
         "'self'",
         'data:',
         'blob:',
-        'https://picsum.photos',
         'https://api.qrserver.com',
-        'https://loremflickr.com',
     ];
 
     public function handle(Request $request, Closure $next): mixed
