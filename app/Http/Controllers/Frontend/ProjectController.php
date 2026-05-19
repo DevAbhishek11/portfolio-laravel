@@ -8,19 +8,51 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, ?string $category = null)
     {
+        $activeCategory = $category ?? $request->query('category');
+        $search         = $request->query('search');
+        $sort           = $request->query('sort', 'order');
+
         $query = Project::published()->with('techStacks');
 
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
+        if ($activeCategory && $activeCategory !== 'all') {
+            $query->where('category', $activeCategory);
+        }
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('short_description', 'like', "%{$search}%");
+            });
         }
 
-        $projects   = $query->orderBy('sort_order')->orderByDesc('created_at')->paginate(9);
-        $categories = ['all', 'frontend', 'backend', 'fullstack'];
-        $active     = $request->get('category', 'all');
+        match ($sort) {
+            'newest'  => $query->orderByDesc('created_at'),
+            'popular' => $query->orderByDesc('view_count'),
+            default   => $query->orderBy('sort_order')->orderByDesc('created_at'),
+        };
 
-        return view('frontend.projects.index', compact('projects', 'categories', 'active'));
+        $projects   = $query->paginate(9)->withQueryString();
+        $categories = ['all', 'frontend', 'backend', 'fullstack'];
+        $active     = $activeCategory ?: 'all';
+
+        $viewData = compact('projects', 'categories', 'active', 'search', 'sort');
+
+        if ($request->ajax() || $request->boolean('ajax')) {
+            return response()->json([
+                'html'       => view('frontend.projects._grid', $viewData)->render(),
+                'pagination' => $projects->hasPages() ? view('frontend.projects._pagination', $viewData)->render() : '',
+                'count'      => $projects->total(),
+            ]);
+        }
+
+        return view('frontend.projects.index', $viewData);
+    }
+
+    public function ajaxList(Request $request)
+    {
+        $request->merge(['ajax' => true]);
+        return $this->index($request);
     }
 
     public function show(string $slug)
@@ -30,7 +62,6 @@ class ProjectController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        // Increment view count
         $project->increment('view_count');
 
         $related = Project::published()

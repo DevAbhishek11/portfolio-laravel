@@ -24,7 +24,19 @@ class ProjectController extends Controller
 
         $projects = $query->paginate(15)->withQueryString();
 
+        if ($request->ajax() || $request->boolean('ajax')) {
+            return response()->json([
+                'html' => view('admin.projects._table', compact('projects'))->render(),
+            ]);
+        }
+
         return view('admin.projects.index', compact('projects'));
+    }
+
+    public function ajaxList(Request $request)
+    {
+        $request->merge(['ajax' => true]);
+        return $this->index($request);
     }
 
     public function create()

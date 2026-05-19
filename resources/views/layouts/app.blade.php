@@ -169,6 +169,7 @@
             transition: opacity 0.3s;
             z-index: 0;
             border-radius: inherit;
+            pointer-events: none;
         }
 
         .anime-card:hover {

@@ -31,7 +31,19 @@ class ContactQueryController extends Controller
         $contacts     = $query->paginate(20)->withQueryString();
         $unreadCount  = ContactQuery::where('status', 'unread')->count();
 
+        if ($request->ajax() || $request->boolean('ajax')) {
+            return response()->json([
+                'html' => view('admin.contacts._table', compact('contacts', 'unreadCount'))->render(),
+            ]);
+        }
+
         return view('admin.contacts.index', compact('contacts', 'unreadCount'));
+    }
+
+    public function ajaxList(Request $request)
+    {
+        $request->merge(['ajax' => true]);
+        return $this->index($request);
     }
 
     public function show(int $id)

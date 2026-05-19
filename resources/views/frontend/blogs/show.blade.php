@@ -35,7 +35,7 @@
                     <span class="tech-badge">{{ $blog->category }}</span>
                 @endif
                 @foreach ($blog->tags ?? [] as $tag)
-                    <a href="{{ route('blogs.index', ['tag' => $tag]) }}" class="tech-badge"
+                    <a href="{{ route('blogs.tag', $tag) }}" class="tech-badge"
                         style="text-decoration:none;">#{{ $tag }}</a>
                 @endforeach
             </div>

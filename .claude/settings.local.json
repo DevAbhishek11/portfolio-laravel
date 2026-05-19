@@ -7,7 +7,27 @@
       "Bash(php -l app/Http/Controllers/Admin/ContactQueryController.php)",
       "Bash(php -l app/Http/Controllers/Auth/PasswordResetController.php)",
       "Bash(php -l app/Http/Controllers/Frontend/HomeController.php)",
-      "Bash(php artisan *)"
+      "Bash(php artisan *)",
+      "Bash(php -l resources/views/frontend/blogs/index.blade.php)",
+      "Bash(php -l app/Http/Controllers/Frontend/BlogController.php)",
+      "Bash(php -l app/Http/Controllers/Frontend/ProjectController.php)",
+      "Bash(php -l app/Http/Controllers/Admin/BlogController.php)",
+      "Bash(php -l app/Http/Controllers/Admin/ProjectController.php)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://127.0.0.1:8088/blogs)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://127.0.0.1:8088/blogs/category/Laravel)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://127.0.0.1:8088/blogs/tag/api)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://127.0.0.1:8088/projects)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://127.0.0.1:8088/projects/category/frontend)",
+      "Bash(curl -sS -H \"X-Requested-With: XMLHttpRequest\" \"http://127.0.0.1:8088/blogs/ajax/list\")",
+      "Bash(curl -sS -H \"X-Requested-With: XMLHttpRequest\" \"http://127.0.0.1:8088/projects/ajax/list?category=frontend\")",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" \"http://127.0.0.1:8088/admin/blogs/ajax/list\")",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" \"http://127.0.0.1:8088/admin/projects\")",
+      "Bash(curl -sS \"http://127.0.0.1:8088/blogs\")",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" \"http://127.0.0.1:8088/blogs/some-nonexistent-slug\")",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" \"http://127.0.0.1:8088/projects/some-nonexistent-slug\")",
+      "Bash(taskkill /F /FI \"WINDOWTITLE eq *artisan*\")",
+      "Bash(taskkill /F /IM php.exe)",
+      "PowerShell(Get-Process *)"
     ]
   }
 }

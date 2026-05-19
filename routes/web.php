@@ -22,12 +22,23 @@ use App\Http\Controllers\Admin\SkillController;
 Route::middleware(['track.pageview'])->group(function () {
     Route::get('/',               [HomeController::class,    'index'])->name('home');
     Route::get('/about',          [AboutController::class,   'index'])->name('about');
-    Route::get('/projects',       [ProjectController::class, 'index'])->name('projects.index');
-    Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projects.show');
+
+    // ── Projects (specific routes before slug catch-all) ───────────────────
+    Route::get('/projects',                         [ProjectController::class, 'index'])->name('projects.index');
+    Route::get('/projects/ajax/list',               [ProjectController::class, 'ajaxList'])->name('projects.ajax');
+    Route::get('/projects/category/{category}',     [ProjectController::class, 'index'])->name('projects.category');
+    Route::get('/projects/{slug}',                  [ProjectController::class, 'show'])->name('projects.show');
+
     Route::get('/services',       [ServiceController::class, 'index'])->name('services');
-    Route::get('/blogs',          [BlogController::class,    'index'])->name('blogs.index');
-    Route::get('/blogs/{slug}',   [BlogController::class,    'show'])->name('blogs.show');
-    Route::post('/blogs/{slug}/comment', [BlogController::class, 'comment'])->name('blogs.comment');
+
+    // ── Blogs (specific routes before slug catch-all) ──────────────────────
+    Route::get('/blogs',                          [BlogController::class, 'index'])->name('blogs.index');
+    Route::get('/blogs/ajax/list',                [BlogController::class, 'ajaxList'])->name('blogs.ajax');
+    Route::get('/blogs/tag/{tag}',                [BlogController::class, 'index'])->name('blogs.tag');
+    Route::get('/blogs/category/{category}',      [BlogController::class, 'index'])->name('blogs.category');
+    Route::get('/blogs/{slug}',                   [BlogController::class, 'show'])->name('blogs.show');
+    Route::post('/blogs/{slug}/comment',          [BlogController::class, 'comment'])->name('blogs.comment');
+
     Route::get('/contact',        [ContactController::class, 'index'])->name('contact');
     Route::post('/contact',       [ContactController::class, 'store'])->name('contact.store');
 });
@@ -57,17 +68,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard',       [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->name('dashboard.stats');
 
+        // Projects
+        Route::get('/projects/ajax/list', [AdminProjectController::class, 'ajaxList'])->name('projects.ajax');
         Route::resource('projects', AdminProjectController::class);
         Route::post('/projects/{id}/toggle-featured', [AdminProjectController::class, 'toggleFeatured'])->name('projects.toggle-featured');
         Route::post('/projects/{id}/toggle-status',   [AdminProjectController::class, 'toggleStatus'])->name('projects.toggle-status');
         Route::delete('/projects/{id}/image/{imageId}', [AdminProjectController::class, 'deleteImage'])->name('projects.delete-image');
 
+        // Blogs
+        Route::get('/blogs/ajax/list', [AdminBlogController::class, 'ajaxList'])->name('blogs.ajax');
         Route::resource('blogs', AdminBlogController::class);
         Route::post('/blogs/{id}/toggle-featured', [AdminBlogController::class, 'toggleFeatured'])->name('blogs.toggle-featured');
         Route::post('/blogs/{id}/toggle-status',   [AdminBlogController::class, 'toggleStatus'])->name('blogs.toggle-status');
-        Route::post('/blogs/{id}/comments/{commentId}/approve', [AdminBlogController::class, 'approveComment'])->name('blogs.approve-comment');
-        Route::delete('/blogs/{id}/comments/{commentId}',       [AdminBlogController::class, 'deleteComment'])->name('blogs.delete-comment');
 
+        // Blog Comments (review pages under blogs)
+        Route::get('/blogs/{id}/comments',                       [AdminBlogController::class, 'comments'])->name('blogs.comments');
+        Route::get('/blogs/{id}/comments/ajax',                  [AdminBlogController::class, 'commentsAjax'])->name('blogs.comments.ajax');
+        Route::post('/blogs/{id}/comments/{commentId}/approve',  [AdminBlogController::class, 'approveComment'])->name('blogs.approve-comment');
+        Route::post('/blogs/{id}/comments/{commentId}/toggle',   [AdminBlogController::class, 'toggleComment'])->name('blogs.toggle-comment');
+        Route::delete('/blogs/{id}/comments/{commentId}',        [AdminBlogController::class, 'deleteComment'])->name('blogs.delete-comment');
+
+        // Contacts
+        Route::get('/contacts/ajax/list',    [ContactQueryController::class, 'ajaxList'])->name('contacts.ajax');
         Route::get('/contacts',              [ContactQueryController::class, 'index'])->name('contacts.index');
         Route::get('/contacts/{id}',         [ContactQueryController::class, 'show'])->name('contacts.show');
         Route::post('/contacts/{id}/reply',  [ContactQueryController::class, 'reply'])->name('contacts.reply');

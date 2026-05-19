@@ -15,14 +15,32 @@ class BlogController extends Controller
 
     public function index(Request $request)
     {
-        $query = Blog::with('user')->latest();
+        $blogs = $this->queryBlogs($request)->paginate(15)->withQueryString();
+
+        if ($request->ajax() || $request->boolean('ajax')) {
+            return response()->json([
+                'html' => view('admin.blogs._table', compact('blogs'))->render(),
+            ]);
+        }
+
+        return view('admin.blogs.index', compact('blogs'));
+    }
+
+    public function ajaxList(Request $request)
+    {
+        $request->merge(['ajax' => true]);
+        return $this->index($request);
+    }
+
+    private function queryBlogs(Request $request)
+    {
+        $query = Blog::with('user')->withCount(['comments', 'approvedComments'])->latest();
 
         if ($request->filled('status'))   $query->where('status', $request->status);
         if ($request->filled('category')) $query->where('category', $request->category);
         if ($request->filled('search'))   $query->where('title', 'like', "%{$request->search}%");
 
-        $blogs = $query->paginate(15)->withQueryString();
-        return view('admin.blogs.index', compact('blogs'));
+        return $query;
     }
 
     public function create()
@@ -74,13 +92,16 @@ class BlogController extends Controller
 
     public function show(int $id)
     {
-        $blog     = Blog::with(['user', 'comments.replies'])->findOrFail($id);
-        $comments = BlogComment::where('blog_id', $id)
-            ->whereNull('parent_id')
-            ->with('replies')
+        $blog = Blog::with(['user'])
+            ->withCount(['comments', 'approvedComments'])
+            ->findOrFail($id);
+
+        $recentComments = BlogComment::where('blog_id', $id)
             ->latest()
-            ->paginate(20);
-        return view('admin.blogs.show', compact('blog', 'comments'));
+            ->limit(5)
+            ->get();
+
+        return view('admin.blogs.show', compact('blog', 'recentComments'));
     }
 
     public function edit(int $id)
@@ -149,6 +170,10 @@ class BlogController extends Controller
     {
         $blog = Blog::findOrFail($id);
         $blog->update(['is_featured' => ! $blog->is_featured]);
+
+        if (request()->ajax()) {
+            return response()->json(['ok' => true, 'is_featured' => $blog->is_featured]);
+        }
         return back()->with('success', 'Featured status updated.');
     }
 
@@ -164,16 +189,78 @@ class BlogController extends Controller
         return back()->with('success', "Status changed to {$next}.");
     }
 
+    // ── Comments management ────────────────────────────────────────────────
+    public function comments(Request $request, int $id)
+    {
+        $blog = Blog::withCount(['comments', 'approvedComments'])->findOrFail($id);
+        $comments = $this->queryComments($request, $id)->paginate(20)->withQueryString();
+
+        if ($request->ajax() || $request->boolean('ajax')) {
+            return response()->json([
+                'html' => view('admin.blogs._comments_table', compact('blog', 'comments'))->render(),
+            ]);
+        }
+
+        return view('admin.blogs.comments', compact('blog', 'comments'));
+    }
+
+    public function commentsAjax(Request $request, int $id)
+    {
+        $request->merge(['ajax' => true]);
+        return $this->comments($request, $id);
+    }
+
+    private function queryComments(Request $request, int $blogId)
+    {
+        $query = BlogComment::where('blog_id', $blogId)->latest();
+
+        if ($request->filled('filter')) {
+            match ($request->filter) {
+                'approved' => $query->where('is_approved', true),
+                'pending'  => $query->where('is_approved', false),
+                default    => null,
+            };
+        }
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('name', 'like', "%{$s}%")
+                  ->orWhere('email', 'like', "%{$s}%")
+                  ->orWhere('comment', 'like', "%{$s}%");
+            });
+        }
+        return $query;
+    }
+
     public function approveComment(int $id, int $commentId)
     {
-        BlogComment::where('blog_id', $id)->findOrFail($commentId)
-            ->update(['is_approved' => true]);
+        $comment = BlogComment::where('blog_id', $id)->findOrFail($commentId);
+        $comment->update(['is_approved' => true]);
+
+        if (request()->ajax()) {
+            return response()->json(['ok' => true, 'is_approved' => true]);
+        }
         return back()->with('success', 'Comment approved.');
+    }
+
+    public function toggleComment(int $id, int $commentId)
+    {
+        $comment = BlogComment::where('blog_id', $id)->findOrFail($commentId);
+        $comment->update(['is_approved' => ! $comment->is_approved]);
+
+        if (request()->ajax()) {
+            return response()->json(['ok' => true, 'is_approved' => $comment->is_approved]);
+        }
+        return back()->with('success', $comment->is_approved ? 'Comment is now visible.' : 'Comment hidden from site.');
     }
 
     public function deleteComment(int $id, int $commentId)
     {
         BlogComment::where('blog_id', $id)->findOrFail($commentId)->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['ok' => true]);
+        }
         return back()->with('success', 'Comment deleted.');
     }
 
