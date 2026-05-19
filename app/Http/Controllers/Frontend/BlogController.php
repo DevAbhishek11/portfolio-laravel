@@ -89,7 +89,7 @@ class BlogController extends Controller
             'email'      => $data['email'],
             'comment'    => $data['comment'],
             'ip_address' => $request->ip(),
-            'is_approved'=> false,
+            'is_approved'=> true,
         ]);
 
         return back()->with('success', 'Comment submitted and awaiting moderation. Thank you!');
